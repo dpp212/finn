@@ -15,6 +15,8 @@ if settings.gemini_api_key:
 # cheap model for bulk work, bigger model where reasoning matters
 FLASH = "gemini-2.0-flash"
 PRO = "gemini-1.5-pro"
+FLASH_MODEL = FLASH
+PRO_MODEL = PRO
 
 
 def _call_gemini(prompt, model_name=FLASH, temperature=0.2):

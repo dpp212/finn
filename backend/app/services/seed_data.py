@@ -184,7 +184,13 @@ def seed_rich_demo_data(db: Session):
         existing = db.query(Announcement).filter_by(
             ticker=item["ticker"], headline=item["headline"]
         ).first()
-        if not existing:
+        if existing:
+            existing.filed_at = now - timedelta(hours=item["hours_ago"])
+            existing.enrichment = item["enrichment"]
+            existing.summary = item["summary"]
+            existing.priority = item["priority"]
+            existing.category = item["category"]
+        else:
             db.add(Announcement(
                 ticker=item["ticker"],
                 source=item["source"],
@@ -203,7 +209,9 @@ def seed_rich_demo_data(db: Session):
         existing = db.query(Alert).filter_by(
             ticker=item["ticker"], title=item["title"]
         ).first()
-        if not existing:
+        if existing:
+            existing.triggered_at = now - timedelta(hours=item["hours_ago"])
+        else:
             db.add(Alert(
                 ticker=item["ticker"],
                 alert_type=item["alert_type"],
