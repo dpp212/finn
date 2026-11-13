@@ -272,4 +272,33 @@ Price/volume:
 
 3-5 short paragraphs. No bullet dumps. If nothing happened, say so in one line."""
 
-    return _call_gemini(prompt, model_name=FLASH, temperature=0.4)
+    if settings.gemini_api_key:
+        out = _call_gemini(prompt, model_name=FLASH, temperature=0.4)
+        if out:
+            return out
+
+    # Grounded analyst briefing fallback when offline
+    lines = []
+    crit = [a for a in announcements if a.get("priority") == "high"]
+    if crit:
+        lines.append(f"**High-Impact Filings ({len(crit)}):**")
+        for a in crit[:3]:
+            ticker = a.get("ticker", "").replace(".NS", "")
+            lines.append(f"• **{ticker}**: {a.get('summary', a.get('headline', ''))}")
+    
+    if price_alerts:
+        lines.append(f"\n**Price & Volume Signals ({len(price_alerts)}):**")
+        for al in price_alerts[:3]:
+            lines.append(f"• **{al.get('title', '')}**: {al.get('body', '')}")
+            
+    notable = [a for a in announcements if a.get("priority") == "medium"]
+    if notable:
+        lines.append(f"\n**Notable Corporate Actions:**")
+        for a in notable[:2]:
+            ticker = a.get("ticker", "").replace(".NS", "")
+            lines.append(f"• **{ticker}**: {a.get('summary', a.get('headline', ''))}")
+            
+    if not lines:
+        return "No notable disclosures or threshold spikes in this window. Portfolio is trading in range."
+        
+    return "\n".join(lines)
