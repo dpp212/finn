@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { FormattedContent } from '@/components/FormattedContent';
 
 const ANALYSIS_TYPES = [
   { id: 'business_snapshot', label: 'Business', icon: '🏢' },
@@ -223,7 +224,11 @@ export function PullView() {
                 ? 'bg-finn-accent text-white rounded-br-sm'
                 : 'bg-finn-card border border-finn-border rounded-bl-sm'
             )}>
-              <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>
+              {msg.role === 'user' ? (
+                <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>
+              ) : (
+                <FormattedContent content={msg.content} />
+              )}
               <span className="text-xxs opacity-50 mt-1 block">
                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>

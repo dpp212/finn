@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { formatPct, timeAgo, CATEGORY_LABELS, CATEGORY_COLORS, cn } from '@/lib/utils';
+import { FormattedContent } from '@/components/FormattedContent';
 
 interface DigestData {
   window_hours: number;
@@ -100,8 +101,12 @@ export function PushView() {
             <span className="text-xs font-medium text-finn-text">FINN&apos;s Take</span>
             <span className="text-xxs text-finn-muted ml-auto">Last {hours}h</span>
           </div>
-          <div className="text-sm text-finn-text leading-relaxed whitespace-pre-line">
-            {briefing || 'No activity in this window. Your portfolio is quiet.'}
+          <div className="pt-1">
+            {briefing ? (
+              <FormattedContent content={briefing} />
+            ) : (
+              <p className="text-xs text-finn-muted">No activity in this window. Your portfolio is quiet.</p>
+            )}
           </div>
         </div>
       )}
